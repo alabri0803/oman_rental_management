@@ -155,3 +155,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # نموذج المستخدم المخصص
 AUTH_USER_MODEL = 'core.User'
+CSRF_TRUSTED_ORIGINS = [
+    'https://380cf41c-c910-4473-8654-d07a8144601e-00-10vbx0y1fbjkc.pike.replit.dev',
+    'https://*.replit.dev'
+]
