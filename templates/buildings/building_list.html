@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "قائمة المباني" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- رأس الصفحة -->
+    <div class="page-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1>{% trans "قائمة المباني" %}</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'core:home' %}">{% trans "الرئيسية" %}</a></li>
+                            <li class="breadcrumb-item active">{% trans "المباني" %}</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="{% url 'buildings:create' %}" class="btn btn-success">
+                        <i class="bi bi-plus-circle me-2"></i>{% trans "إضافة مبنى جديد" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- نموذج البحث والفلترة -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="search" class="form-label">{% trans "البحث" %}</label>
+                        <input type="text" class="form-control" id="search" name="search" 
+                               value="{{ search_query }}" placeholder="{% trans 'البحث في المباني...' %}">
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="has_mosque" name="has_mosque" 
+                                   {% if has_mosque %}checked{% endif %}>
+                            <label class="form-check-label" for="has_mosque">
+                                {% trans "يحتوي على مصلى" %}
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="has_elevator" name="has_elevator" 
+                                   {% if has_elevator %}checked{% endif %}>
+                            <label class="form-check-label" for="has_elevator">
+                                {% trans "يحتوي على مصعد" %}
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="has_parking" name="has_parking" 
+                                   {% if has_parking %}checked{% endif %}>
+                            <label class="form-check-label" for="has_parking">
+                                {% trans "يحتوي على مواقف" %}
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary mt-4 w-100">
+                            <i class="bi bi-search me-1"></i>{% trans "بحث" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- قائمة المباني -->
+        {% if page_obj %}
+            <div class="row">
+                {% for building in page_obj %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 fade-in-up">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="bi bi-building text-primary me-2"></i>
+                                    {{ building.name }}
+                                </h5>
+                                
+                                <p class="card-text text-muted">
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    {{ building.address|truncatechars:50 }}
+                                </p>
+                                
+                                {% if building.description %}
+                                    <p class="card-text">{{ building.description|truncatechars:100 }}</p>
+                                {% endif %}
+                                
+                                <!-- معلومات المبنى -->
+                                <div class="row text-center mb-3">
+                                    <div class="col-4">
+                                        <div class="stat-card">
+                                            <div class="stat-number">{{ building.total_floors }}</div>
+                                            <div class="stat-label">{% trans "طابق" %}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stat-card">
+                                            <div class="stat-number">0</div>
+                                            <div class="stat-label">{% trans "وحدة" %}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stat-card">
+                                            <div class="stat-number">{{ building.parking_spaces|default:0 }}</div>
+                                            <div class="stat-label">{% trans "موقف" %}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- مميزات المبنى -->
+                                <div class="mb-3">
+                                    {% if building.has_mosque %}
+                                        <span class="badge bg-success me-1">
+                                            <i class="bi bi-building me-1"></i>{% trans "مصلى" %}
+                                        </span>
+                                    {% endif %}
+                                    {% if building.has_elevator %}
+                                        <span class="badge bg-info me-1">
+                                            <i class="bi bi-arrow-up-down me-1"></i>{% trans "مصعد" %}
+                                        </span>
+                                    {% endif %}
+                                    {% if building.has_parking %}
+                                        <span class="badge bg-warning me-1">
+                                            <i class="bi bi-car-front me-1"></i>{% trans "مواقف" %}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="card-footer bg-transparent">
+                                <div class="btn-group w-100" role="group">
+                                    <a href="{% url 'buildings:detail' building.id %}" class="btn btn-outline-primary">
+                                        <i class="bi bi-eye me-1"></i>{% trans "عرض" %}
+                                    </a>
+                                    <a href="{% url 'buildings:edit' building.id %}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-pencil me-1"></i>{% trans "تعديل" %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- الترقيم -->
+            {% if page_obj.has_other_pages %}
+                <nav aria-label="{% trans 'ترقيم الصفحات' %}">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if has_mosque %}&has_mosque=on{% endif %}{% if has_elevator %}&has_elevator=on{% endif %}{% if has_parking %}&has_parking=on{% endif %}">
+                                    {% trans "الأولى" %}
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if has_mosque %}&has_mosque=on{% endif %}{% if has_elevator %}&has_elevator=on{% endif %}{% if has_parking %}&has_parking=on{% endif %}">
+                                    {% trans "السابقة" %}
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                {% trans "صفحة" %} {{ page_obj.number }} {% trans "من" %} {{ page_obj.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if has_mosque %}&has_mosque=on{% endif %}{% if has_elevator %}&has_elevator=on{% endif %}{% if has_parking %}&has_parking=on{% endif %}">
+                                    {% trans "التالية" %}
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if has_mosque %}&has_mosque=on{% endif %}{% if has_elevator %}&has_elevator=on{% endif %}{% if has_parking %}&has_parking=on{% endif %}">
+                                    {% trans "الأخيرة" %}
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <!-- رسالة عدم وجود مباني -->
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-building" style="font-size: 4rem; color: var(--primary-color);"></i>
+                </div>
+                <h3>{% trans "لا توجد مباني" %}</h3>
+                <p class="text-muted">{% trans "لم يتم العثور على أي مباني. ابدأ بإضافة مبنى جديد." %}</p>
+                <a href="{% url 'buildings:create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>{% trans "إضافة مبنى جديد" %}
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

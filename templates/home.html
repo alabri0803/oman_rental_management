@@ -1,0 +1,386 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "الصفحة الرئيسية" %} - نظام إدارة الإيجارات{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4 fade-in-up">
+                    {% trans "مرحباً بكم في نظام إدارة الإيجارات" %}
+                </h1>
+                <p class="lead mb-4 fade-in-up" style="animation-delay: 0.2s;">
+                    {% trans "حلول متكاملة وحديثة لإدارة العقارات والإيجارات في سلطنة عمان" %}
+                </p>
+                <div class="fade-in-up" style="animation-delay: 0.4s;">
+                    <a href="#dashboard" class="btn btn-light btn-lg me-3">
+                        <i class="bi bi-graph-up me-2"></i>{% trans "لوحة المعلومات" %}
+                    </a>
+                    <a href="#" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-play-circle me-2"></i>{% trans "جولة تعريفية" %}
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="hero-icon">
+                    <i class="bi bi-building" style="font-size: 8rem; opacity: 0.8;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dashboard Section -->
+<section id="dashboard" class="py-5">
+    <div class="container">
+        <!-- Statistics Cards -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="text-center mb-5">{% trans "نظرة عامة على النظام" %}</h2>
+            </div>
+            
+            <!-- Total Buildings -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card stats-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stats-icon me-3">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-1">{{ total_buildings|default:"0" }}</h3>
+                            <p class="text-muted mb-0">{% trans "إجمالي المباني" %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Total Units -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card stats-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stats-icon me-3" style="background: linear-gradient(135deg, var(--secondary-color) 0%, #007A2F 100%);">
+                            <i class="bi bi-house"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-1">{{ total_units|default:"0" }}</h3>
+                            <p class="text-muted mb-0">{% trans "إجمالي الوحدات" %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Occupied Units -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card stats-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stats-icon me-3" style="background: linear-gradient(135deg, var(--ocean-blue) 0%, #005A8B 100%);">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-1">{{ occupied_units|default:"0" }}</h3>
+                            <p class="text-muted mb-0">{% trans "الوحدات المؤجرة" %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Monthly Revenue -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card stats-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stats-icon me-3" style="background: linear-gradient(135deg, var(--accent-color) 0%, #E6C200 100%);">
+                            <i class="bi bi-currency-exchange"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-1">{{ monthly_revenue|default:"0" }} <small>ر.ع</small></h3>
+                            <p class="text-muted mb-0">{% trans "الإيرادات الشهرية" %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="mb-4">{% trans "الإجراءات السريعة" %}</h3>
+            </div>
+            
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                <a href="{% url 'buildings:create' %}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                    <i class="bi bi-building-add mb-2" style="font-size: 2rem;"></i>
+                    <span>{% trans "إضافة مبنى" %}</span>
+                </a>
+            </div>
+            
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                <a href="{% url 'tenants:create' %}" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                    <i class="bi bi-person-plus mb-2" style="font-size: 2rem;"></i>
+                    <span>{% trans "إضافة مستأجر" %}</span>
+                </a>
+            </div>
+            
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                <a href="#" class="btn btn-outline-info w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                    <i class="bi bi-file-text-fill mb-2" style="font-size: 2rem;"></i>
+                    <span>{% trans "عقد جديد" %}</span>
+                </a>
+            </div>
+            
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                <a href="#" class="btn btn-outline-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                    <i class="bi bi-credit-card mb-2" style="font-size: 2rem;"></i>
+                    <span>{% trans "تسجيل دفعة" %}</span>
+                </a>
+            </div>
+            
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                <a href="#" class="btn btn-outline-danger w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                    <i class="bi bi-tools mb-2" style="font-size: 2rem;"></i>
+                    <span>{% trans "طلب صيانة" %}</span>
+                </a>
+            </div>
+            
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                <a href="#" class="btn btn-outline-secondary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                    <i class="bi bi-graph-up mb-2" style="font-size: 2rem;"></i>
+                    <span>{% trans "التقارير" %}</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Activities and Alerts -->
+        <div class="row">
+            <!-- Recent Activities -->
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history me-2"></i>{% trans "الأنشطة الأخيرة" %}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex align-items-center">
+                                <div class="me-3">
+                                    <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-person-plus text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{% trans "تم إضافة مستأجر جديد" %}</h6>
+                                    <p class="text-muted mb-0 small">{% trans "أحمد محمد - وحدة 101" %}</p>
+                                    <small class="text-muted">{% trans "منذ ساعتين" %}</small>
+                                </div>
+                            </div>
+                            
+                            <div class="list-group-item d-flex align-items-center">
+                                <div class="me-3">
+                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-credit-card text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{% trans "تم استلام دفعة" %}</h6>
+                                    <p class="text-muted mb-0 small">{% trans "500 ر.ع - وحدة 205" %}</p>
+                                    <small class="text-muted">{% trans "منذ 4 ساعات" %}</small>
+                                </div>
+                            </div>
+                            
+                            <div class="list-group-item d-flex align-items-center">
+                                <div class="me-3">
+                                    <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-tools text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{% trans "طلب صيانة جديد" %}</h6>
+                                    <p class="text-muted mb-0 small">{% trans "إصلاح تكييف - وحدة 302" %}</p>
+                                    <small class="text-muted">{% trans "منذ يوم واحد" %}</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                {% trans "عرض جميع الأنشطة" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts and Notifications -->
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bell me-2"></i>{% trans "التنبيهات والإشعارات" %}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <div>
+                                <strong>{% trans "عقود تنتهي قريباً" %}</strong><br>
+                                <small>{% trans "3 عقود تنتهي خلال الشهر القادم" %}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-danger d-flex align-items-center" role="alert">
+                            <i class="bi bi-credit-card me-2"></i>
+                            <div>
+                                <strong>{% trans "دفعات متأخرة" %}</strong><br>
+                                <small>{% trans "5 دفعات متأخرة تحتاج متابعة" %}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info d-flex align-items-center" role="alert">
+                            <i class="bi bi-tools me-2"></i>
+                            <div>
+                                <strong>{% trans "طلبات صيانة معلقة" %}</strong><br>
+                                <small>{% trans "2 طلبات صيانة في انتظار التنفيذ" %}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-success d-flex align-items-center" role="alert">
+                            <i class="bi bi-house me-2"></i>
+                            <div>
+                                <strong>{% trans "وحدات شاغرة" %}</strong><br>
+                                <small>{% trans "4 وحدات متاحة للإيجار" %}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 oman-pattern">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2>{% trans "مميزات النظام" %}</h2>
+                <p class="lead text-muted">{% trans "نظام شامل ومتطور لإدارة جميع جوانب العقارات والإيجارات" %}</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-building" style="font-size: 3rem; color: var(--primary-color);"></i>
+                        </div>
+                        <h5>{% trans "إدارة المباني" %}</h5>
+                        <p class="text-muted">{% trans "إدارة شاملة للمباني والطوابق والوحدات مع تتبع تفصيلي لكل عقار" %}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-people" style="font-size: 3rem; color: var(--secondary-color);"></i>
+                        </div>
+                        <h5>{% trans "إدارة المستأجرين" %}</h5>
+                        <p class="text-muted">{% trans "قاعدة بيانات شاملة للمستأجرين مع إدارة الوثائق والمعلومات الشخصية" %}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-file-text" style="font-size: 3rem; color: var(--ocean-blue);"></i>
+                        </div>
+                        <h5>{% trans "إدارة العقود" %}</h5>
+                        <p class="text-muted">{% trans "نظام متطور لإدارة عقود الإيجار مع التجديد التلقائي والتنبيهات" %}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-credit-card" style="font-size: 3rem; color: var(--accent-color);"></i>
+                        </div>
+                        <h5>{% trans "إدارة الدفعات" %}</h5>
+                        <p class="text-muted">{% trans "تتبع دقيق للدفعات والإيصالات مع تنبيهات للدفعات المتأخرة" %}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-tools" style="font-size: 3rem; color: var(--sunset-orange);"></i>
+                        </div>
+                        <h5>{% trans "إدارة الصيانة" %}</h5>
+                        <p class="text-muted">{% trans "نظام شامل لطلبات الصيانة مع تتبع الحالة وإدارة مقدمي الخدمة" %}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-graph-up" style="font-size: 3rem; color: var(--palm-green);"></i>
+                        </div>
+                        <h5>{% trans "التقارير والإحصائيات" %}</h5>
+                        <p class="text-muted">{% trans "تقارير مالية وإدارية شاملة مع رسوم بيانية تفاعلية" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// إضافة تأثيرات الحركة عند التمرير
+document.addEventListener('DOMContentLoaded', function() {
+    // تأثير العد للإحصائيات
+    const statsNumbers = document.querySelectorAll('.stats-card h3');
+    
+    const animateNumbers = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = entry.target;
+                const finalNumber = parseInt(target.textContent);
+                let currentNumber = 0;
+                const increment = finalNumber / 50;
+                
+                const timer = setInterval(() => {
+                    currentNumber += increment;
+                    if (currentNumber >= finalNumber) {
+                        target.textContent = finalNumber;
+                        clearInterval(timer);
+                    } else {
+                        target.textContent = Math.floor(currentNumber);
+                    }
+                }, 30);
+                
+                observer.unobserve(target);
+            }
+        });
+    };
+    
+    const observer = new IntersectionObserver(animateNumbers);
+    statsNumbers.forEach(number => observer.observe(number));
+});
+</script>
+{% endblock %}
+
